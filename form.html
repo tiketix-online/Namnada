@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAMNADA ID — Form Pemesanan NAMNADA 2026</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #E6007E; --primary-dark: #C5006E; --primary-light: #FFE5F1;
+    --primary-glow: rgba(230, 0, 126, 0.15); --bg-main: #f7f7f8; --card-bg: #FFFFFF;
+    --card-border: #e8e8e8; --text-main: #1a1a1a; --text-muted: #8a8a8a; --error: #EF4444;
+    --btn-blue: #005ce6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif; }
+  body { background: var(--bg-main); color: var(--text-main); padding-bottom: 120px; overflow-x: hidden; -webkit-font-smoothing:antialiased; }
+  .container { max-width: 900px; margin: auto; }
+
+  /* Header NAMNADA ID */
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: #fff; border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 100; }
+  .logo { font-family: 'Helvetica Neue', Arial, sans-serif; font-weight: 900; font-size: 24px; color: var(--primary); letter-spacing: -1px; text-decoration: none; }
+  .logo span { color: var(--text-main); }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .lang-selector { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text-muted); cursor:pointer; padding:7px 10px; border:1px solid var(--card-border); border-radius:4px; background:var(--card-bg); }
+  .user-icon { width:36px; height:36px; border:1px solid var(--card-border); border-radius:50%; display:grid; place-items:center; color:var(--text-muted); cursor:pointer; background:var(--card-bg); }
+
+  /* Banner & Hero */
+  .banner img { width: 100%; max-height: 350px; object-fit: cover; display: block; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+  .hero-card { background: #fff; margin: -40px 20px 20px; padding: 25px; border-radius: 8px; position: relative; z-index: 2; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid var(--card-border); }
+  .hero-card h2 { font-size: 24px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+  .hero-card p { color: var(--text-muted); margin-top: 4px; font-size: 14px; }
+  .event-info { display: flex; justify-content: center; gap: 16px; margin-top: 15px; flex-wrap: wrap; color: var(--text-muted); font-size: 13px; font-weight: 500; }
+  .event-info div { display: flex; align-items: center; gap: 6px; }
+  .event-info i { color: var(--primary); }
+
+  /* Form Card */
+  .header { padding: 10px 25px 5px; }
+  .header h1 { font-size: 22px; font-weight: 800; }
+  .header p { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+  .card { background: #fff; border: 1px solid var(--card-border); border-radius: 8px; padding: 24px; margin: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+  .title { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text-main); display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--text-main); padding-bottom: 10px; }
+  .title i { color: var(--primary); }
+  
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--text-main); }
+  .input-icon-wrap { position: relative; display: flex; align-items: center; }
+  .input-icon { position: absolute; left: 16px; font-size: 14px; color: var(--text-muted); pointer-events: none; }
+
+  input, select, textarea {
+    width: 100%; padding: 12px 16px 12px 44px; border-radius: 6px; border: 1px solid var(--card-border);
+    background: #fff; font-size: 14px; transition: 0.2s; color: var(--text-main);
+  }
+  textarea { resize: vertical; min-height: 80px; padding-left: 16px; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+  input.error, select.error, textarea.error { border-color: var(--error); background: #FFF0F0; animation: shake 0.4s; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+  .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; color: var(--text-muted); }
+  .summary-row strong { color: var(--text-main); font-weight: 600; }
+  .total { font-size: 16px; font-weight: 800; color: var(--text-main); border-top: 1px dashed var(--card-border); margin-top: 8px; padding-top: 14px; }
+  .total span { color: var(--primary); font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 20px; }
+
+  .check { display: flex; gap: 12px; margin-top: 12px; align-items: flex-start; background: #FAFAFA; padding: 14px; border-radius: 6px; border: 1px solid var(--card-border); }
+  .check input { width: 18px; height: 18px; min-width: 18px; accent-color: var(--primary); cursor: pointer; margin-top: 2px; }
+  .check label { font-size: 13px; color: var(--text-muted); cursor: pointer; line-height: 1.5; }
+
+  /* Bottom Bar */
+  .bottom { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; padding: 12px 20px; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); border-top: 1px solid var(--card-border); z-index: 100; }
+  .btn { width: 100%; max-width: 900px; margin: auto; display: flex; justify-content: center; align-items: center; gap: 10px; padding: 14px 32px; border: none; border-radius: 6px; background: var(--btn-blue); color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+  .btn:hover:not(:disabled) { background: #004abf; }
+  .btn:disabled { background: #a0c4f1; cursor: not-allowed; }
+
+  /* Loading */
+  .loading-overlay { visibility: hidden; opacity: 0; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); z-index: 99999; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.3s ease; }
+  .loading-overlay.active { visibility: visible; opacity: 1; }
+  .spinner-box { width: 70px; height: 70px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.08); margin-bottom: 20px; }
+  .spinner { width: 35px; height: 35px; border: 4px solid var(--primary-glow); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 16px; font-weight: 700; color: var(--text-main); }
+  .loading-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+
+  @media (max-width: 480px) {
+    .hero-card { margin: -20px 14px 16px; padding: 20px; }
+    .hero-card h2 { font-size: 20px; }
+    .event-info { flex-direction: column; gap: 6px; }
+    .header { padding: 10px 14px 5px; }
+    .header h1 { font-size: 20px; }
+    .card { margin: 14px; padding: 18px; }
+    .btn { font-size: 14px; padding: 12px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="logo">NAMNADA <span>ID</span></a>
+  <div class="topbar-right">
+    <div class="lang-selector"><i class="fa-solid fa-globe"></i> ID</div>
+    <div class="user-icon"><i class="fa-solid fa-user"></i></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="banner">
+    <img src="banner.png" alt="NAMNADA 2026">
+  </div>
+
+  <div class="hero-card">
+    <h2>NAMNADA 2026</h2>
+    <p>Music · Beach · Festival</p>
+    <div class="event-info">
+      <div><i class="fa-solid fa-calendar-days"></i> Sabtu, 12 Desember 2026 · 15:00 WIB</div>
+      <div><i class="fa-solid fa-location-dot"></i> Boom Marina, Banyuwangi</div>
+    </div>
+  </div>
+
+  <div class="header">
+    <h1>Form Pemesanan Tiket</h1>
+    <p>Lengkapi data berikut sebelum melanjutkan ke pembayaran.</p>
+  </div>
+
+  <div class="card">
+    <div class="title"><i class="fa-solid fa-receipt"></i> Ringkasan Pesanan</div>
+    <div class="summary-row"><span>Jenis Tiket</span><strong id="jenisTiket">-</strong></div>
+    <div id="detailTiket"></div>
+    <div class="summary-row"><span>Jumlah Tiket</span><strong id="jumlahTiket">0</strong></div>
+    <div class="summary-row total"><span>Total Pembayaran</span><span id="totalBayar">Rp 0</span></div>
+  </div>
+
+  <div class="card">
+    <div class="title"><i class="fa-solid fa-user-pen"></i> Data Pemesan</div>
+    <div class="form-group">
+      <label>Nama Lengkap (sesuai identitas)</label>
+      <div class="input-icon-wrap">
+        <i class="fa-solid fa-user input-icon"></i>
+        <input id="nama" type="text" placeholder="Masukkan nama lengkap">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Jenis Identitas</label>
+      <div class="input-icon-wrap">
+        <i class="fa-solid fa-id-card input-icon"></i>
+        <select id="identitas">
+          <option value="">Pilih Jenis Identitas</option>
+          <option>KTP</option><option>SIM</option><option>Paspor</option><option>Kartu Pelajar</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Nomor Identitas</label>
+      <div class="input-icon-wrap">
+        <i class="fa-solid fa-hashtag input-icon"></i>
+        <input id="nomorId" type="text" placeholder="Masukkan nomor identitas">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>E-mail Aktif</label>
+      <div class="input-icon-wrap">
+        <i class="fa-solid fa-envelope input-icon"></i>
+        <input id="email" type="email" placeholder="contoh@email.com">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>No. WhatsApp Aktif</label>
+      <div class="input-icon-wrap">
+        <i class="fa-solid fa-phone input-icon"></i>
+        <input id="wa" type="tel" placeholder="08xxxxxxxxxx">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Alamat / Tempat Tinggal</label>
+      <div class="input-icon-wrap">
+        <textarea id="alamat" placeholder="Masukkan alamat lengkap"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="title"><i class="fa-solid fa-shield-halved"></i> Persetujuan</div>
+    <div class="check"><input type="checkbox" id="setuju1"><label for="setuju1">Data yang saya isi adalah benar dan dapat dipertanggungjawabkan.</label></div>
+    <div class="check"><input type="checkbox" id="setuju2"><label for="setuju2">Saya menyetujui syarat dan ketentuan acara serta kebijakan privasi.</label></div>
+  </div>
+</div>
+
+<div class="bottom">
+  <button class="btn" id="lanjut"><i class="fa-solid fa-arrow-right-to-bracket"></i> LANJUT KE PEMBAYARAN</button>
+</div>
+
+<div id="loading" class="loading-overlay">
+  <div class="spinner-box"><div class="spinner"></div></div>
+  <div class="loading-text">Menyiapkan Halaman Pembayaran...</div>
+  <div class="loading-sub">Mohon tunggu sebentar</div>
+</div>
+
+<script>
+  // Ambil data dari URL Parameter (dari index.html)
+  const urlParams = new URLSearchParams(window.location.search);
+  const qty = parseInt(urlParams.get('qty') || '0');
+  const total = parseInt(urlParams.get('total') || '0');
+  const namaTiket = decodeURIComponent(urlParams.get('nama') || 'Early Bird Ticket - NAMNADA 2026');
+  const harga = parseInt(urlParams.get('harga') || '0');
+
+  const namaEl = document.getElementById('nama');
+  const identitasEl = document.getElementById('identitas');
+  const nomorIdEl = document.getElementById('nomorId');
+  const emailEl = document.getElementById('email');
+  const waEl = document.getElementById('wa');
+  const alamatEl = document.getElementById('alamat');
+  const setuju1El = document.getElementById('setuju1');
+  const setuju2El = document.getElementById('setuju2');
+  const loadingEl = document.getElementById('loading');
+  const lanjutBtn = document.getElementById('lanjut');
+
+  // Tampilkan data ke layar
+  document.getElementById('totalBayar').innerText = 'Rp ' + total.toLocaleString('id-ID');
+  document.getElementById('jumlahTiket').innerText = qty;
+  
+  const subTotal = qty * harga;
+  document.getElementById('detailTiket').innerHTML = `<div class="summary-row"><span>${namaTiket} (${qty}x)</span><strong>Rp ${subTotal.toLocaleString('id-ID')}</strong></div>`;
+  document.getElementById('jenisTiket').innerText = `${namaTiket} (${qty})`;
+
+  // Simpan Draft Form ke LocalStorage (Opsional)
+  function saveDraft() {
+    try {
+      localStorage.setItem('draft_nama', namaEl.value);
+      localStorage.setItem('draft_identitas', identitasEl.value);
+      localStorage.setItem('draft_nomorId', nomorIdEl.value);
+      localStorage.setItem('draft_email', emailEl.value);
+      localStorage.setItem('draft_wa', waEl.value);
+      localStorage.setItem('draft_alamat', alamatEl.value);
+    } catch(e) {}
+  }
+  function restoreDraft() {
+    try {
+      namaEl.value = localStorage.getItem('draft_nama') || '';
+      identitasEl.value = localStorage.getItem('draft_identitas') || '';
+      nomorIdEl.value = localStorage.getItem('draft_nomorId') || '';
+      emailEl.value = localStorage.getItem('draft_email') || '';
+      waEl.value = localStorage.getItem('draft_wa') || '';
+      alamatEl.value = localStorage.getItem('draft_alamat') || '';
+    } catch(e) {}
+  }
+  restoreDraft();
+
+  [namaEl, identitasEl, nomorIdEl, emailEl, waEl, alamatEl].forEach(el => {
+    el.addEventListener('input', saveDraft);
+    el.addEventListener('change', saveDraft);
+  });
+
+  lanjutBtn.onclick = function() {
+    const wajib = [namaEl, identitasEl, nomorIdEl, emailEl, waEl, alamatEl];
+    let isValid = true;
+    wajib.forEach(field => field.classList.remove('error'));
+
+    for (const field of wajib) {
+      if (!field.value.trim()) {
+        field.classList.add('error');
+        isValid = false;
+      }
+    }
+
+    if (!isValid) {
+      alert('Mohon lengkapi semua data wajib (berwarna merah).');
+      const firstError = document.querySelector('.error');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    if (!setuju1El.checked || !setuju2El.checked) {
+      alert('Harap centang seluruh kotak persetujuan.');
+      return;
+    }
+
+    loadingEl.classList.add('active');
+    lanjutBtn.disabled = true;
+    lanjutBtn.innerText = 'Memproses...';
+
+    // Siapkan data untuk dikirim ke Formspree
+    const orderData = {
+      nama: namaEl.value, wa: waEl.value, email: emailEl.value,
+      identitas: identitasEl.value, nomor_id: nomorIdEl.value, alamat: alamatEl.value,
+      jenis_tiket: namaTiket, jumlah_tiket: qty, total_bayar: total
+    };
+
+    // Simpan ke LocalStorage sebagai cadangan
+    try {
+      localStorage.setItem('namnada_order', JSON.stringify({
+        nama: namaEl.value, wa: waEl.value,
+        cart: { items: [{ jenis: namaTiket, qty: qty, harga: harga }], totalQty: qty, totalPrice: total }
+      }));
+    } catch(e) {}
+
+    // Kirim data ke Formspree
+    fetch('https://formspree.io/f/mojojdpl', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(orderData)
+    }).catch(e => console.log('Formspree error:', e));
+
+    // Langsung redirect ke qris.html (bawa parameter URL juga)
+    const qrisParams = new URLSearchParams({
+      nama: namaEl.value, wa: waEl.value, jenis: namaTiket, qty: qty, total: total
+    });
+    window.location.href = 'qris.html?' + qrisParams.toString();
+  };
+</script>
+</body>
+</html>
