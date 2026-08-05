@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAMNADA ID — Pembayaran Pending</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #E6007E;
+    --primary-dark: #B3005F;
+    --primary-light: #FFE5F1;
+    --primary-glow: rgba(230, 0, 126, 0.4);
+    --bg-main: #0B0B14;
+    --bg-grad-1: #1A1208;
+    --bg-grad-2: #0B0B14;
+    --card-bg: #FFFFFF;
+    --card-border: rgba(255,255,255,0.08);
+    --text-main: #0F0F1A;
+    --text-muted: #6B7280;
+    --text-light: #9CA3AF;
+    --warning: #F59E0B;
+    --warning-dark: #D97706;
+    --warning-light: #FEF3C7;
+    --warning-glow: rgba(245, 158, 11, 0.4);
+    --danger: #EF4444;
+    --btn-blue: #005ce6;
+    --gold: #F5C842;
+    --gold-soft: #FFE9A8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-main);
+    color: #fff;
+    padding-bottom: 130px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Animated mesh background - warning tone */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(900px circle at 10% 10%, rgba(245, 158, 11, 0.18), transparent 50%),
+      radial-gradient(700px circle at 90% 20%, rgba(230, 0, 126, 0.12), transparent 50%),
+      radial-gradient(800px circle at 50% 100%, rgba(239, 68, 68, 0.08), transparent 50%),
+      linear-gradient(180deg, var(--bg-grad-1), var(--bg-grad-2));
+    z-index: -2;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .container { max-width: 600px; margin: auto; padding: 20px; }
+
+  /* Topbar */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 22px;
+    background: rgba(15, 15, 26, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--card-border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-img {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    object-fit: cover;
+    box-shadow: 0 4px 14px var(--primary-glow);
+  }
+  .logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 22px;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+  .logo-text span { color: var(--primary); }
+
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .topbar-chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+    color: #FCD34D;
+  }
+  .topbar-chip i { color: var(--warning); font-size: 10px; }
+  .user-icon {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: #fff; cursor: pointer;
+    background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+    box-shadow: 0 4px 14px var(--warning-glow);
+    border: 2px solid rgba(255,255,255,0.1);
+    font-size: 14px;
+  }
+
+  /* Pending Hero */
+  .pending-hero {
+    text-align: center;
+    padding: 36px 20px 18px;
+    animation: fadeUp 0.7s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+  .pending-icon-wrap {
+    width: 92px; height: 92px;
+    background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 22px;
+    position: relative;
+    box-shadow: 0 12px 40px var(--warning-glow);
+  }
+  .pending-icon-wrap::before, .pending-icon-wrap::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid var(--warning);
+  }
+  .pending-icon-wrap::before {
+    inset: -10px;
+    opacity: 0.4;
+    animation: pulseRing 2.2s infinite;
+  }
+  .pending-icon-wrap::after {
+    inset: -20px;
+    opacity: 0.2;
+    animation: pulseRing 2.2s infinite 0.4s;
+  }
+  .pending-icon-wrap i {
+    font-size: 42px;
+    color: #fff;
+    animation: clockTick 1.2s ease-in-out infinite;
+  }
+  @keyframes pulseRing {
+    0% { transform: scale(0.85); opacity: 0.6; }
+    100% { transform: scale(1.3); opacity: 0; }
+  }
+  @keyframes clockTick {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+  }
+
+  .pending-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    color: #FCD34D;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .pending-badge i { font-size: 9px; animation: blink 1.4s infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .pending-hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 30px; font-weight: 700;
+    color: #fff; margin-bottom: 10px;
+    letter-spacing: -1px; line-height: 1.1;
+  }
+  .pending-hero h1 .grad {
+    background: linear-gradient(135deg, var(--warning), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .pending-hero p {
+    font-size: 14px; color: #9CA3AF;
+    line-height: 1.6;
+    max-width: 380px; margin: 0 auto;
+  }
+
+  /* Alert Box - Important Refund Info */
+  .alert-box {
+    margin-top: 22px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(239, 68, 68, 0.05));
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.7s cubic-bezier(.2,.8,.2,1) 0.1s backwards;
+  }
+  .alert-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--warning), var(--danger));
+  }
+  .alert-head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .alert-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+    display: grid; place-items: center;
+    color: #fff; font-size: 15px;
+    box-shadow: 0 4px 12px var(--warning-glow);
+    flex-shrink: 0;
+  }
+  .alert-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: #FEF3C7;
+    letter-spacing: -0.2px;
+  }
+  .alert-body {
+    font-size: 13px;
+    color: #D1D5DB;
+    line-height: 1.65;
+    padding-left: 2px;
+  }
+  .alert-body strong { color: #FCD34D; font-weight: 700; }
+  .alert-body .refund-time {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(245, 158, 11, 0.15);
+    padding: 4px 10px;
+    border-radius: 8px;
+    color: #FCD34D;
+    font-weight: 700;
+    margin: 0 2px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+  }
+
+  /* Countdown Refund Timer */
+  .countdown-box {
+    margin-top: 14px;
+    background: rgba(15, 15, 26, 0.6);
+    border: 1px dashed rgba(245, 158, 11, 0.35);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+  }
+  .countdown-label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600;
+    color: #FCD34D;
+  }
+  .countdown-label i { font-size: 13px; }
+  .countdown-timer {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+  .countdown-timer .unit {
+    display: flex; flex-direction: column; align-items: center;
+    background: rgba(245, 158, 11, 0.15);
+    border-radius: 8px;
+    padding: 4px 8px;
+    min-width: 38px;
+  }
+  .countdown-timer .unit small {
+    font-size: 8px;
+    color: #FCD34D;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 1px;
+  }
+  .countdown-timer .sep { color: var(--warning); }
+
+  /* Ticket Card */
+  .ticket-card {
+    background: var(--card-bg);
+    border-radius: 22px;
+    margin-top: 22px;
+    overflow: hidden;
+    box-shadow:
+      0 30px 60px -15px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(255,255,255,0.05);
+    animation: fadeUp 0.8s cubic-bezier(.2,.8,.2,1) 0.15s backwards;
+    position: relative;
+  }
+  .ticket-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--warning), var(--gold), var(--warning));
+    background-size: 200% 100%;
+    animation: shimmer 4s linear infinite;
+    z-index: 2;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .ticket-header {
+    background: linear-gradient(135deg, #1F1408, #2A1810);
+    padding: 22px 24px;
+    color: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .ticket-header::after {
+    content: '';
+    position: absolute;
+    top: -50%; right: -10%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, var(--warning-glow), transparent 70%);
+    pointer-events: none;
+  }
+  .ticket-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.5px;
+    position: relative; z-index: 1;
+  }
+  .ticket-header .status {
+    background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 10px; font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 4px 12px var(--warning-glow);
+    position: relative; z-index: 1;
+  }
+  .ticket-header .status i { font-size: 9px; animation: blink 1.4s infinite; }
+
+  .ticket-body { padding: 0; }
+
+  /* Banner with overlay */
+  .banner-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+  .event-banner-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.85) brightness(0.92);
+  }
+  .banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.15) 0%, transparent 40%, rgba(0,0,0,0.7));
+  }
+  .banner-tag {
+    position: absolute;
+    top: 14px; left: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: rgba(245, 158, 11, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    color: #FEF3C7;
+    letter-spacing: 0.5px;
+  }
+  .banner-tag i { color: var(--warning); }
+
+  /* Watermark Pending on Banner */
+  .banner-watermark {
+    position: absolute;
+    bottom: 14px; right: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px; font-weight: 800;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: rgba(245, 158, 11, 0.85);
+    padding: 4px 12px;
+    border-radius: 6px;
+    transform: rotate(-4deg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  .ticket-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 24px;
+    padding: 24px 24px 18px;
+  }
+  .info-item {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .info-item i {
+    font-size: 10px;
+    color: var(--warning-dark);
+  }
+  .info-item span {
+    display: block;
+    font-size: 14px;
+    color: var(--text-main);
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: -0.2px;
+    margin-top: 5px;
+    word-break: break-word;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  /* Divider */
+  .divider {
+    position: relative;
+    height: 32px;
+    margin: 0;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 26px; height: 26px;
+    background: var(--bg-main);
+    border-radius: 50%;
+  }
+  .divider::before { left: -13px; }
+  .divider::after { right: -13px; }
+  .divider-line {
+    border-top: 2px dashed #E5E7EB;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translateY(-50%);
+  }
+
+  /* QR Section - Locked */
+  .qr-section {
+    text-align: center;
+    padding: 16px 24px 28px;
+    background: linear-gradient(180deg, #FAFAFB, #fff);
+    position: relative;
+  }
+  .qr-frame {
+    display: inline-block;
+    padding: 14px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow:
+      0 8px 24px rgba(0,0,0,0.08),
+      0 0 0 1px rgba(245, 158, 11, 0.2);
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .qr-frame::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 20px;
+    padding: 2px;
+    background: linear-gradient(135deg, var(--warning), var(--gold), var(--warning));
+    background-size: 200% 200%;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: shimmer 4s linear infinite;
+  }
+  .qr-section img {
+    width: 150px; height: 150px;
+    display: block;
+    border-radius: 8px;
+    filter: grayscale(0.6) opacity(0.45);
+  }
+  /* Lock overlay on QR */
+  .qr-lock-overlay {
+    position: absolute;
+    inset: 14px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(2px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 8px;
+    z-index: 2;
+  }
+  .qr-lock-overlay i {
+    font-size: 32px;
+    color: var(--warning-dark);
+    filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.4));
+  }
+  .qr-lock-overlay span {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px; font-weight: 700;
+    color: var(--warning-dark);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .qr-corner {
+    position: absolute;
+    width: 18px; height: 18px;
+    border: 3px solid var(--warning);
+    z-index: 3;
+  }
+  .qr-corner.tl { top: 4px; left: 4px; border-right: 0; border-bottom: 0; border-radius: 6px 0 0 0; }
+  .qr-corner.tr { top: 4px; right: 4px; border-left: 0; border-bottom: 0; border-radius: 0 6px 0 0; }
+  .qr-corner.bl { bottom: 4px; left: 4px; border-right: 0; border-top: 0; border-radius: 0 0 0 6px; }
+  .qr-corner.br { bottom: 4px; right: 4px; border-left: 0; border-top: 0; border-radius: 0 0 6px 0; }
+
+  .qr-section .qr-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--text-main);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .qr-section .qr-sub {
+    font-size: 11px;
+    color: var(--warning-dark);
+    font-weight: 600;
+  }
+  .qr-section .qr-sub i { margin-right: 4px; }
+
+  /* Action chips row */
+  .action-row {
+    display: flex; gap: 10px;
+    margin-top: 20px;
+    animation: fadeUp 0.8s cubic-bezier(.2,.8,.2,1) 0.3s backwards;
+  }
+  .action-chip {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 13px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 13px; font-weight: 600;
+    text-decoration: none;
+    transition: 0.25s;
+    cursor: pointer;
+  }
+  .action-chip:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+  .action-chip i { color: var(--warning); }
+
+  /* Help Box */
+  .help-box {
+    margin-top: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex; align-items: center; gap: 12px;
+    animation: fadeUp 0.8s cubic-bezier(.2,.8,.2,1) 0.4s backwards;
+  }
+  .help-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(37, 211, 102, 0.15);
+    border: 1px solid rgba(37, 211, 102, 0.3);
+    display: grid; place-items: center;
+    color: #25D366;
+    flex-shrink: 0;
+  }
+  .help-text { flex: 1; }
+  .help-text strong {
+    display: block;
+    font-size: 13px; font-weight: 700;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .help-text span {
+    font-size: 12px;
+    color: #9CA3AF;
+    line-height: 1.4;
+  }
+  .help-btn {
+    padding: 8px 14px;
+    background: #25D366;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Bottom Bar - dual buttons */
+  .bottom {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: rgba(11, 11, 20, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 14px 20px;
+    border-top: 1px solid var(--card-border);
+    z-index: 100;
+  }
+  .bottom-row {
+    max-width: 600px;
+    margin: auto;
+    display: flex; gap: 10px;
+  }
+  .btn {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px;
+    border: none;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 800;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    cursor: pointer;
+    transition: 0.25s;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+    color: #fff;
+    text-transform: uppercase;
+    box-shadow: 0 8px 24px var(--warning-glow);
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition: 0.6s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px var(--warning-glow); }
+  .btn-primary:hover::before { left: 100%; }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.12);
+    transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 480px) {
+    .ticket-info-grid { grid-template-columns: 1fr; gap: 14px; }
+    .pending-hero h1 { font-size: 26px; }
+    .topbar-chip { display: none; }
+    .countdown-box { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .countdown-timer { font-size: 16px; }
+    .countdown-timer .unit { min-width: 34px; padding: 3px 6px; }
+    .help-box { flex-direction: column; align-items: flex-start; }
+    .help-btn { align-self: stretch; text-align: center; padding: 10px; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="logo-wrap">
+    <img src="logo.png" alt="NAMNADA ID" class="logo-img">
+    <span class="logo-text">NAMNADA <span>ID</span></span>
+  </a>
+  <div class="topbar-right">
+    <div class="topbar-chip"><i class="fa-solid fa-triangle-exclamation"></i> Pending</div>
+    <div class="user-icon"><i class="fa-solid fa-user"></i></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="pending-hero">
+    <div class="pending-icon-wrap">
+      <i class="fa-solid fa-clock"></i>
+    </div>
+    <div class="pending-badge">
+      <i class="fa-solid fa-circle"></i> Pembayaran Pending
+    </div>
+    <h1>Pembayaran <span class="grad">Tertunda</span></h1>
+    <p>Transaksi QRIS belum dapat diselesaikan karena telah mencapai batas limit. Jangan khawatir, dana Anda yang sempat terpotong akan dikembalikan otomatis.</p>
+  </div>
+
+  <!-- Alert Refund Info -->
+  <div class="alert-box">
+    <div class="alert-head">
+      <div class="alert-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+      <div class="alert-title">Informasi Penting Pengembalian Dana</div>
+    </div>
+    <div class="alert-body">
+      Pembayaran via <strong>QRIS</strong> tidak dapat diproses karena telah mencapai <strong>batas limit transaksi</strong>. Dana yang sempat terpotong akan dikembalikan secara otomatis ke metode pembayaran asli Anda dalam waktu
+      <span class="refund-time"><i class="fa-solid fa-rotate-left"></i> 1×24 Jam</span>
+      kerja. Pastikan untuk memeriksa mutasi rekening Anda secara berkala.
+    </div>
+
+    <!-- Countdown Timer -->
+    <div class="countdown-box">
+      <div class="countdown-label">
+        <i class="fa-solid fa-hourglass-half"></i>
+        <span>Estimasi Refund</span>
+      </div>
+      <div class="countdown-timer" id="countdown">
+        <div class="unit"><span id="hours">23</span><small>Jam</small></div>
+        <span class="sep">:</span>
+        <div class="unit"><span id="minutes">59</span><small>Menit</small></div>
+        <span class="sep">:</span>
+        <div class="unit"><span id="seconds">59</span><small>Detik</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket Card -->
+  <div class="ticket-card">
+    <div class="ticket-header">
+      <h2>NAMNADA 2026</h2>
+      <div class="status"><i class="fa-solid fa-clock"></i> Pending</div>
+    </div>
+
+    <div class="ticket-body">
+      <div class="banner-wrap">
+        <img src="banner.png" alt="Banner NAMNADA 2026" class="event-banner-img">
+        <div class="banner-overlay"></div>
+        <div class="banner-tag"><i class="fa-solid fa-triangle-exclamation"></i> Menunggu Pembayaran</div>
+        <div class="banner-watermark">Pending</div>
+      </div>
+
+      <div class="ticket-info-grid">
+        <div class="info-item"><i class="fa-solid fa-hashtag"></i> Order ID<span id="orderId">NAMNADA-000</span></div>
+        <div class="info-item"><i class="fa-solid fa-user"></i> Nama Pemesan<span id="namaPemesan">-</span></div>
+        <div class="info-item"><i class="fa-solid fa-ticket"></i> Kategori Tiket<span id="jenisTiket">-</span></div>
+        <div class="info-item"><i class="fa-solid fa-layer-group"></i> Jumlah Tiket<span id="jumlahTiket">0 Tiket</span></div>
+        <div class="info-item"><i class="fa-solid fa-calendar"></i> Tanggal<span>Sabtu, 12 Des 2026 · 15:00 WIB</span></div>
+        <div class="info-item"><i class="fa-solid fa-location-dot"></i> Lokasi<span>Boom Marina, Banyuwangi</span></div>
+      </div>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="qr-section">
+        <div class="qr-frame">
+          <span class="qr-corner tl"></span>
+          <span class="qr-corner tr"></span>
+          <span class="qr-corner bl"></span>
+          <span class="qr-corner br"></span>
+          <img src="eticket.png" alt="E-Tiket QR Code">
+          <div class="qr-lock-overlay">
+            <i class="fa-solid fa-lock"></i>
+            <span>Terkunci</span>
+          </div>
+        </div>
+        <div class="qr-label">E-Tiket Belum Aktif</div>
+        <div class="qr-sub"><i class="fa-solid fa-circle-info"></i>QR akan aktif setelah pembayaran berhasil</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action chips -->
+  <div class="action-row">
+    <a href="index.html" class="action-chip"><i class="fa-solid fa-house"></i> Beranda</a>
+    <a href="#" class="action-chip"><i class="fa-solid fa-rotate"></i> Coba Bayar Lagi</a>
+    <a href="https://wa.me/628217003017" target="_blank" class="action-chip"><i class="fa-brands fa-whatsapp"></i> Bantuan</a>
+  </div>
+
+  <!-- Help Box -->
+  <div class="help-box">
+    <div class="help-icon"><i class="fa-brands fa-whatsapp"></i></div>
+    <div class="help-text">
+      <strong>Butuh bantuan dengan transaksi Anda?</strong>
+      <span>Hubungi support kami via WhatsApp untuk bantuan refund dan pembayaran ulang.</span>
+    </div>
+    <a href="https://wa.me/628217003017" target="_blank" class="help-btn">
+      <i class="fa-brands fa-whatsapp"></i> Hubungi
+    </a>
+  </div>
+
+</div>
+
+<!-- Bottom Bar - dual buttons -->
+<div class="bottom">
+  <div class="bottom-row">
+    <a href="index.html" class="btn btn-secondary">
+      <i class="fa-solid fa-house"></i> Beranda
+    </a>
+    <a href="#" class="btn btn-primary">
+      <i class="fa-solid fa-rotate"></i> Bayar Ulang
+    </a>
+  </div>
+</div>
+
+<script>
+  // Ambil data pemesanan dari localStorage
+  var order = JSON.parse(localStorage.getItem('namnada_order') || '{}');
+  var orderId = localStorage.getItem('orderId') || 'NAMNADA-000';
+
+  // Fallback jika data LocalStorage tidak ada
+  if (!order.cart) {
+    order = {
+      nama: 'Guest',
+      cart: { items: [{ jenis: 'Early Bird Ticket - NAMNADA 2026' }], totalQty: 1 }
+    };
+  }
+
+  var cart = order.cart || { items: [], totalQty: 0 };
+
+  document.getElementById('orderId').textContent = orderId;
+  document.getElementById('namaPemesan').textContent = order.nama || '-';
+  document.getElementById('jenisTiket').textContent = (cart.items || []).map(function(i) { return i.jenis; }).join(', ') || '-';
+  document.getElementById('jumlahTiket').textContent = cart.totalQty + ' Tiket';
+
+  // Countdown timer untuk estimasi refund 1x24 jam
+  (function() {
+    // Cek apakah ada waktu mulai countdown tersimpan
+    var storedStart = localStorage.getItem('refund_start_time');
+    var startTime;
+    if (storedStart) {
+      startTime = parseInt(storedStart, 10);
+    } else {
+      startTime = Date.now();
+      localStorage.setItem('refund_start_time', startTime.toString());
+    }
+
+    var duration = 24 * 60 * 60; // 24 jam dalam detik
+
+    function updateCountdown() {
+      var now = Math.floor(Date.now() / 1000);
+      var start = Math.floor(startTime / 1000);
+      var elapsed = now - start;
+      var remaining = duration - elapsed;
+
+      if (remaining <= 0) {
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('seconds').textContent = '00';
+        return;
+      }
+
+      var h = Math.floor(remaining / 3600);
+      var m = Math.floor((remaining % 3600) / 60);
+      var s = remaining % 60;
+
+      document.getElementById('hours').textContent = h < 10 ? '0' + h : h;
+      document.getElementById('minutes').textContent = m < 10 ? '0' + m : m;
+      document.getElementById('seconds').textContent = s < 10 ? '0' + s : s;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  })();
+</script>
+
+</body>
+</html>
